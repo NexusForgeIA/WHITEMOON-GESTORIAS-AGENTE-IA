@@ -288,241 +288,33 @@ function handleQuick(key){
           addTyping();
           setTimeout(()=>{
             removeTyping();
-            addBotMsg(f.seg);
+            if(f.precio){ addBotMsg(f.precio); }
             setTimeout(()=>{
-              addWidget(`<div style="padding-left:38px">${actionBtnsHtml(f.btns,'handleFlujoAction')}</div>`,400);
-            },600);
+              addTyping();
+              setTimeout(()=>{
+                removeTyping();
+                addBotMsg(f.seg);
+                setTimeout(()=>{
+                  addWidget(`<div style="padding-left:38px">${actionBtnsHtml(f.btns,'handleFlujoAction')}</div>`,400);
+                },600);
+              },800);
+            },f.precio?900:0);
           },800);
         },1000);
       } else {
         addTyping();
         setTimeout(()=>{
           removeTyping();
-          addBotMsg(f.seg);
+          if(f.precio){ addBotMsg(f.precio); }
           setTimeout(()=>{
-            addWidget(`<div style="padding-left:38px">${actionBtnsHtml(f.btns,'handleFlujoAction')}</div>`,400);
-          },600);
+            addTyping();
+            setTimeout(()=>{
+              removeTyping();
+              addBotMsg(f.seg);
+              setTimeout(()=>{
+                addWidget(`<div style="padding-left:38px">${actionBtnsHtml(f.btns,'handleFlujoAction')}</div>`,400);
+              },600);
+            },800);
+          },f.precio?900:0);
         },800);
       }
-    },400);
-  },800);
-}
-
-function handleFlujoAction(idx){
-  document.querySelectorAll('.abtn').forEach(b=>b.disabled=true);
-  const needs=['0','sí','si','gestion','llevad','llamen','llam','cita','pedir'];
-  const btn=event.target.textContent.toLowerCase();
-  const needsContact=needs.some(n=>btn.includes(n))||idx===0;
-  addUserMsg(event.target.textContent);
-  if(btn.includes('cita')||btn.includes('pedir cita')){
-    startCita();return;
-  }
-  if(needsContact){
-    addTyping();
-    setTimeout(()=>{
-      removeTyping();
-      addBotMsg('¡Perfecto! Elige el día que prefieres para que te llamemos. 📅');
-      const now=new Date();
-      calYear=now.getFullYear();calMonth=now.getMonth();
-      window._modoLead=true;
-      setTimeout(()=>{renderCalendar(calYear,calMonth);},600);
-    },800);
-  } else {
-    addTyping();
-    setTimeout(()=>{
-      removeTyping();
-      addBotMsg('Cuéntame tu duda y te respondo ahora mismo. ¿Qué necesitas saber?');
-    },800);
-  }
-}
-
-// CITA CON CALENDARIO
-function startCita(){
-  addTyping();
-  setTimeout(()=>{
-    removeTyping();
-    addBotMsg('¡Perfecto! Elige el día que mejor te venga para tu consulta. 📅\n\nUna vez selecciones la fecha, nuestro equipo te llamará para confirmar la hora.');
-    const now=new Date();
-    calYear=now.getFullYear();calMonth=now.getMonth();
-    setTimeout(()=>{renderCalendar(calYear,calMonth);},600);
-  },800);
-}
-
-function renderCalendar(y,m){
-  const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  const dias=['L','M','X','J','V','S','D'];
-  const first=new Date(y,m,1).getDay();
-  const offset=first===0?6:first-1;
-  const total=new Date(y,m+1,0).getDate();
-  const today=new Date();today.setHours(0,0,0,0);
-  let cells='';
-  for(let i=0;i<offset;i++) cells+=`<div class="cal-day empty"></div>`;
-  for(let d=1;d<=total;d++){
-    const date=new Date(y,m,d);
-    const isPast=date<today;
-    const isToday=date.getTime()===today.getTime();
-    const dow=date.getDay();
-    const isWeekend=dow===0||dow===6;
-    cells+=`<div class="cal-day${isPast?' past':''}${isToday?' today':''}${isWeekend&&!isPast?' past':''}" onclick="${isPast||isWeekend?'':'pickFecha('+d+','+m+','+y+')'}">${d}</div>`;
-  }
-  const html=`<div style="padding-left:38px"><div class="cal-wrap">
-    <div class="cal-header">
-      <button class="cal-nav" onclick="prevMes()">‹</button>
-      <span>${meses[m]} ${y}</span>
-      <button class="cal-nav" onclick="nextMes()">›</button>
-    </div>
-    <div class="cal-grid">
-      <div class="cal-days-names">${dias.map(d=>`<div class="cal-day-name">${d}</div>`).join('')}</div>
-      <div class="cal-days" id="cal-cells">${cells}</div>
-    </div>
-    <div style="padding:8px 10px;text-align:center;font-size:11px;color:rgba(255,255,255,.3)">Solo días laborables · Fines de semana no disponibles</div>
-  </div></div>`;
-  addWidget(html,200);
-}
-
-function prevMes(){
-  if(calMonth===0){calYear--;calMonth=11;}else{calMonth--;}
-  document.querySelector('.cal-wrap')?.closest('div')?.remove();
-  renderCalendar(calYear,calMonth);
-}
-function nextMes(){
-  if(calMonth===11){calYear++;calMonth=0;}else{calMonth++;}
-  document.querySelector('.cal-wrap')?.closest('div')?.remove();
-  renderCalendar(calYear,calMonth);
-}
-
-function pickFecha(d,m,y){
-  const meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  citaFecha=`${d} de ${meses[m]} de ${y}`;
-  document.querySelector('.cal-wrap')?.closest('div')?.remove();
-  addUserMsg(citaFecha);
-  addTyping();
-  setTimeout(()=>{
-    removeTyping();
-    const msg = window._modoLead
-      ? `Anotado el <strong>${citaFecha}</strong>. 📅 Déjanos tus datos y te llamamos ese día.`
-      : `Perfecto, he anotado el <strong>${citaFecha}</strong>. 📅\n\nAhora déjanos tu nombre y teléfono para que nuestro gestor te llame y confirme la cita.`;
-    addBotMsg(msg);
-    setTimeout(()=>{
-      addWidget(`<div style="padding-left:38px">${window._modoLead ? leadFormHtml() : citaLeadFormHtml()}</div>`,500);
-    },600);
-  },800);
-}
-
-function citaLeadFormHtml(){
-  return `<div class="lead-form">
-    <input type="text" id="cita-nombre" placeholder="Nombre">
-    <input type="text" id="cita-apellidos" placeholder="Apellidos">
-    <input type="tel" id="cita-tel" placeholder="Teléfono de contacto">
-    <button class="lead-submit" onclick="submitCita()">✅ Confirmar solicitud de cita</button>
-  </div>`;
-}
-
-function submitCita(){
-  const nombre=document.getElementById('cita-nombre')?.value?.trim();
-  const apellidos=document.getElementById('cita-apellidos')?.value?.trim()||'';
-  const tel=document.getElementById('cita-tel')?.value?.trim();
-  const motivo='';
-  if(!nombre||!tel){alert('Por favor rellena nombre y teléfono.');return;}
-  document.querySelector('.lead-form')?.remove();
-  addUserMsg(`${nombre} ${apellidos} · ${tel} · ${citaFecha}`);
-  sendToN8N({
-    Fecha_Registro: new Date().toLocaleString('es-ES'),
-    Nombre: nombre,
-    Apellidos: apellidos,
-    Telefono: tel,
-    Servicio: window._servicioActual||'Solicitud de cita',
-    Consulta: motivo,
-    Fecha_Cita: citaFecha,
-    Hora_Cita: '',
-    Estado: 'Pendiente'
-  });
-  addTyping();
-  setTimeout(()=>{
-    removeTyping();
-    const b=document.getElementById('chat-body');
-    const d=document.createElement('div');
-    d.className='msg-bot';
-    d.innerHTML=`${botAv()}<div style="max-width:85%"><div class="confirm-box">
-      <div class="confirm-check"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h4>¡Datos recibidos!</h4>
-      <p>Hemos tramitado tus datos. Un agente te llamará para resolver todas tus consultas sobre la solicitud indicada.</p>
-    </div></div>`;
-    b.appendChild(d);b.scrollTop=b.scrollHeight;
-  },1000);
-}
-
-function leadFormHtml(){
-  return `<div class="lead-form">
-    <input type="text" id="lead-nombre" placeholder="Nombre">
-    <input type="text" id="lead-apellidos" placeholder="Apellidos">
-    <input type="tel" id="lead-tel" placeholder="Teléfono de contacto">
-    <button class="lead-submit" onclick="submitLead()">📞 Quiero que me llamen</button>
-  </div>`;
-}
-
-function submitLead(){
-  const nombre=document.getElementById('lead-nombre')?.value?.trim();
-  const apellidos=document.getElementById('lead-apellidos')?.value?.trim()||'';
-  const tel=document.getElementById('lead-tel')?.value?.trim();
-  const horario='';
-  if(!nombre||!tel){alert('Por favor rellena nombre y teléfono.');return;}
-  document.querySelector('.lead-form')?.remove();
-  addUserMsg(`${nombre} ${apellidos} · ${tel}`);
-  sendToN8N({
-    Fecha_Registro: new Date().toLocaleString('es-ES'),
-    Nombre: nombre,
-    Apellidos: apellidos,
-    Telefono: tel,
-    Servicio: window._servicioActual||'Consulta general',
-    Consulta: horario,
-    Fecha_Cita: citaFecha||'',
-    Hora_Cita: '',
-    Estado: 'Pendiente'
-  });
-  citaFecha='';
-  window._modoLead=false;
-  addTyping();
-  setTimeout(()=>{
-    removeTyping();
-    const b=document.getElementById('chat-body');
-    const d=document.createElement('div');
-    d.className='msg-bot';
-    d.innerHTML=`${botAv()}<div style="max-width:85%"><div class="confirm-box">
-      <div class="confirm-check"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h4>¡Datos recibidos!</h4>
-      <p>Hemos tramitado tus datos. Un agente te llamará para resolver todas tus consultas sobre la solicitud indicada.</p>
-    </div></div>`;
-    b.appendChild(d);b.scrollTop=b.scrollHeight;
-  },1000);
-}
-
-function sendMsg(){
-  const inp=document.getElementById('chat-input');
-  const text=inp.value.trim();
-  if(!text)return;
-  inp.value='';
-  addUserMsg(text);
-  const k=text.toLowerCase();
-  let matched=null;
-  if(k.includes('cita')||k.includes('consulta')||k.includes('llamad')) matched='cita';
-  else if(k.includes('renta')||k.includes('irpf')) matched='renta';
-  else if(k.includes('autón')||k.includes('auton')) matched='autonomo';
-  else if(k.includes('empresa')||k.includes('sl ')||k.includes('socie')) matched='empresa';
-  else if(k.includes('contabilid')) matched='contabilidad';
-  else if(k.includes('nóm')||k.includes('nom')||k.includes('seguridad')) matched='nominas';
-  else if(k.includes('iva')||k.includes('trimest')) matched='iva';
-  else if(k.includes('fiscal')||k.includes('hacienda')) matched='fiscal';
-  else if(k.includes('laboral')||k.includes('contrato')||k.includes('despido')) matched='laboral';
-  if(matched){handleQuick(matched);}
-  else{
-    addTyping();
-    setTimeout(()=>{
-      removeTyping();
-      addBotMsg('Entiendo tu consulta. Para ayudarte mejor, ¿puedes indicarme si es una consulta <strong>fiscal, laboral, de constitución de empresa o quieres solicitar una cita</strong>? 👇');
-    },800);
-  }
-}
-</script>
-</body>
-</html>
