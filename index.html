@@ -310,10 +310,11 @@ function handleFlujoAction(idx){
     addTyping();
     setTimeout(()=>{
       removeTyping();
-      addBotMsg('¡Perfecto! Déjanos tus datos y un gestor te contactará en menos de 24h. 📞');
-      setTimeout(()=>{
-        addWidget(`<div style="padding-left:38px">${leadFormHtml()}</div>`,500);
-      },600);
+      addBotMsg('¡Perfecto! Elige el día que prefieres para que te llamemos. 📅');
+      const now=new Date();
+      calYear=now.getFullYear();calMonth=now.getMonth();
+      window._modoLead=true;
+      setTimeout(()=>{renderCalendar(calYear,calMonth);},600);
     },800);
   } else {
     addTyping();
@@ -387,9 +388,12 @@ function pickFecha(d,m,y){
   addTyping();
   setTimeout(()=>{
     removeTyping();
-    addBotMsg(`Perfecto, he anotado el <strong>${citaFecha}</strong>. 📅\n\nAhora déjanos tu nombre y teléfono para que nuestro gestor te llame y confirme la cita.`);
+    const msg = window._modoLead
+      ? `Anotado el <strong>${citaFecha}</strong>. 📅 Déjanos tus datos y te llamamos ese día.`
+      : `Perfecto, he anotado el <strong>${citaFecha}</strong>. 📅\n\nAhora déjanos tu nombre y teléfono para que nuestro gestor te llame y confirme la cita.`;
+    addBotMsg(msg);
     setTimeout(()=>{
-      addWidget(`<div style="padding-left:38px">${citaLeadFormHtml()}</div>`,500);
+      addWidget(`<div style="padding-left:38px">${window._modoLead ? leadFormHtml() : citaLeadFormHtml()}</div>`,500);
     },600);
   },800);
 }
