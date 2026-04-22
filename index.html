@@ -188,12 +188,14 @@ async function sendToN8N(data) {
   try {
     await fetch(N8N_WEBHOOK, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       body: JSON.stringify(data)
     });
   } catch(e) {
-    console.log('N8N webhook error:', e);
+    console.error('N8N error:', e.message);
   }
 }
 
