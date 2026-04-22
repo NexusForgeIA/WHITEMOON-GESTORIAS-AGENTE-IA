@@ -396,7 +396,8 @@ function pickFecha(d,m,y){
 
 function citaLeadFormHtml(){
   return `<div class="lead-form">
-    <input type="text" id="cita-nombre" placeholder="Tu nombre completo">
+    <input type="text" id="cita-nombre" placeholder="Nombre">
+    <input type="text" id="cita-apellidos" placeholder="Apellidos">
     <input type="tel" id="cita-tel" placeholder="Teléfono de contacto">
     <input type="text" id="cita-motivo" placeholder="Motivo de la consulta (opcional)">
     <button class="lead-submit" onclick="submitCita()">✅ Confirmar solicitud de cita</button>
@@ -405,6 +406,7 @@ function citaLeadFormHtml(){
 
 function submitCita(){
   const nombre=document.getElementById('cita-nombre')?.value?.trim();
+  const apellidos=document.getElementById('cita-apellidos')?.value?.trim()||'';
   const tel=document.getElementById('cita-tel')?.value?.trim();
   const motivo=document.getElementById('cita-motivo')?.value?.trim();
   if(!nombre||!tel){alert('Por favor rellena nombre y teléfono.');return;}
@@ -414,7 +416,7 @@ function submitCita(){
   sendToN8N({
     Fecha_Registro: new Date().toLocaleString('es-ES'),
     Nombre: nombre,
-    Apellidos: '',
+    Apellidos: apellidos,
     Telefono: tel,
     Servicio: window._servicioActual || 'Solicitud de cita',
     Consulta: motivo || 'Sin especificar',
@@ -444,7 +446,8 @@ function submitCita(){
 
 function leadFormHtml(){
   return `<div class="lead-form">
-    <input type="text" id="lead-nombre" placeholder="Tu nombre completo">
+    <input type="text" id="lead-nombre" placeholder="Nombre">
+    <input type="text" id="lead-apellidos" placeholder="Apellidos">
     <input type="tel" id="lead-tel" placeholder="Teléfono de contacto">
     <input type="text" id="lead-horario" placeholder="Mejor horario para llamarte">
     <button class="lead-submit" onclick="submitLead()">📞 Quiero que me llamen</button>
@@ -453,6 +456,7 @@ function leadFormHtml(){
 
 function submitLead(){
   const nombre=document.getElementById('lead-nombre')?.value?.trim();
+  const apellidos=document.getElementById('lead-apellidos')?.value?.trim()||'';
   const tel=document.getElementById('lead-tel')?.value?.trim();
   const horario=document.getElementById('lead-horario')?.value?.trim();
   if(!nombre||!tel){alert('Por favor rellena nombre y teléfono.');return;}
@@ -461,7 +465,7 @@ function submitLead(){
   sendToN8N({
     Fecha_Registro: new Date().toLocaleString('es-ES'),
     Nombre: nombre,
-    Apellidos: '',
+    Apellidos: apellidos,
     Telefono: tel,
     Servicio: window._servicioActual || 'Consulta general',
     Consulta: horario || 'Sin especificar',
