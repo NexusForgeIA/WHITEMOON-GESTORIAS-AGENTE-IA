@@ -118,6 +118,7 @@ Soy tu asistente virtual. ¿En qué puedo ayudarte hoy?</div>
     <button class="qbtn" id="btn-iva">🧾 IVA trimestral</button>
     <button class="qbtn" id="btn-fiscal">📈 Asesoría fiscal</button>
     <button class="qbtn" id="btn-laboral">⚖️ Asesoría laboral</button>
+    <button class="qbtn" id="btn-trafico">🚗 Trámites de tráfico</button>
   </div>
   <div class="chat-input-area">
     <div class="chat-input-wrap">
@@ -147,6 +148,13 @@ const flujos = {
   nominas:{msg:'Te ayudo con <strong>Nóminas y Seguridad Social</strong>. \n\nComo empleador tus obligaciones mensuales:\n• Elaboración de nóminas\n• Cotizaciones SS (TC1/TC2)\n• Modelo 111 (retenciones IRPF)\n\nNecesitamos:',docs:['Contratos de trabajo de empleados','Alta en SS de cada trabajador','Datos bancarios de empleados','Partes de horas o incidencias del mes'],precio:'💰 <strong>Presupuesto personalizado</strong> según número de empleados.',seg:'¿Cuántos empleados tienes? Te calculamos el precio.',btns:['👥 Gestionar mis nóminas','❓ Tengo una consulta']},
   iva:{msg:'Te informo sobre el <strong>IVA trimestral</strong> (Modelo 303). \n\nDebes presentarlo cada trimestre. Próximas fechas:',docs:['1T (ene-mar) → hasta el 20 de abril','2T (abr-jun) → hasta el 20 de julio','3T (jul-sep) → hasta el 20 de octubre','4T (oct-dic) → hasta el 30 de enero'],precio:'💰 Gestión IVA trimestral desde <strong>99€/trimestre</strong>.',seg:'¿Quieres que gestionemos tu IVA y te olvides de plazos?',btns:['📂 Sí, lleváis mi IVA','⚠️ Tengo facturas pendientes']},
   fiscal:{msg:'Nuestro departamento de <strong>Asesoría Fiscal</strong> te ayuda con:\n\n• Planificación fiscal anual\n• Impuesto de Sociedades\n• IRPF (pagos fraccionados autónomos)\n• IVA y retenciones\n• Inspecciones de Hacienda',docs:null,precio:'💰 <strong>Presupuesto personalizado</strong> según tus necesidades fiscales.',seg:'¿Quieres hablar con uno de nuestros asesores fiscales?',btns:['📞 Que me llamen','📅 Solicitar cita']},
+  trafico:{
+    msg:'Te ayudo con los <strong>Trámites de Tráfico</strong>. 🚗\n\nGestionamos transferencias de vehículos, cambios de titularidad y otros trámites ante la DGT. Documentación necesaria:',
+    docs:['DNI o NIE del comprador y vendedor','Permiso de circulación del vehículo','Ficha técnica (ITV) en vigor','Contrato de compraventa firmado por ambas partes','Justificante del pago del Impuesto de Transmisiones Patrimoniales (ITP)','Último recibo del Impuesto de Circulación (IVTM) pagado'],
+    precio:'💰 Honorarios gestoría <strong>185€</strong> + tasas administrativas de la DGT.',
+    seg:'¿Quieres que nos encarguemos de toda la gestión?',
+    btns:['✅ Sí, gestionáis vosotros','❓ Tengo más preguntas']
+  },
   laboral:{msg:'Nuestro departamento <strong>Laboral</strong> te asesora en:\n\n• Contratos de trabajo\n• Despidos y finiquitos\n• ERTEs y EREs\n• Convenios colectivos\n• Bajas IT, maternidad, paternidad',docs:null,precio:'💰 <strong>Presupuesto personalizado</strong> según tu caso.',seg:'¿Quieres que un especialista laboral te atienda?',btns:['📞 Que me llamen hoy','📅 Pedir cita']}
 };
 
@@ -163,7 +171,7 @@ function btnsHtml(btns){ return '<div style="padding-left:38px"><div class="acti
 
 function runFlujo(key){
   document.querySelectorAll('.qbtn').forEach(function(b){ b.disabled=true; });
-  var labels={cita:'📅 Solicitar consulta',renta:'📋 Declaración de la renta',autonomo:'👤 Alta autónomos',empresa:'🏢 Constitución empresa',contabilidad:'📊 Contabilidad',nominas:'💼 Nóminas y SS',iva:'🧾 IVA trimestral',fiscal:'📈 Asesoría fiscal',laboral:'⚖️ Asesoría laboral'};
+  var labels={cita:'📅 Solicitar consulta',renta:'📋 Declaración de la renta',autonomo:'👤 Alta autónomos',empresa:'🏢 Constitución empresa',contabilidad:'📊 Contabilidad',nominas:'💼 Nóminas y SS',iva:'🧾 IVA trimestral',fiscal:'📈 Asesoría fiscal',laboral:'⚖️ Asesoría laboral',trafico:'🚗 Trámites de tráfico'};
   servicioActual=labels[key]||key;
   addUser(servicioActual);
   if(key==='cita'){ startCita(); return; }
@@ -291,6 +299,7 @@ function sendMsg(){
   else if(k.includes('iva')||k.includes('trimest')) matched='iva';
   else if(k.includes('fiscal')||k.includes('hacienda')) matched='fiscal';
   else if(k.includes('laboral')||k.includes('contrato')) matched='laboral';
+  else if(k.includes('trafi')||k.includes('vehic')||k.includes('vehíc')||k.includes('transfer')||k.includes('coche')||k.includes('carro')) matched='trafico';
   if(matched){ runFlujo(matched); }
   else{ addTyping(); setTimeout(function(){ rmTyping(); addBot('Puedo ayudarte con fiscal, laboral, autónomos, empresas, contabilidad o IVA. ¿Qué necesitas? 👇'); },800); }
 }
