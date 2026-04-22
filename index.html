@@ -408,18 +408,17 @@ function submitCita(){
   const nombre=document.getElementById('cita-nombre')?.value?.trim();
   const apellidos=document.getElementById('cita-apellidos')?.value?.trim()||'';
   const tel=document.getElementById('cita-tel')?.value?.trim();
-  const motivo=document.getElementById('cita-motivo')?.value?.trim();
+  const motivo=document.getElementById('cita-motivo')?.value?.trim()||'Sin especificar';
   if(!nombre||!tel){alert('Por favor rellena nombre y teléfono.');return;}
-  leadNombre=nombre;
   document.querySelector('.lead-form')?.remove();
-  addUserMsg(`${nombre} · ${tel}${motivo?' · '+motivo:''}`);
+  addUserMsg(`${nombre} ${apellidos} · ${tel} · ${citaFecha}`);
   sendToN8N({
     Fecha_Registro: new Date().toLocaleString('es-ES'),
     Nombre: nombre,
     Apellidos: apellidos,
     Telefono: tel,
-    Servicio: window._servicioActual || 'Solicitud de cita',
-    Consulta: motivo || 'Sin especificar',
+    Servicio: window._servicioActual||'Solicitud de cita',
+    Consulta: motivo,
     Fecha_Cita: citaFecha,
     Hora_Cita: '',
     Estado: 'Pendiente'
@@ -432,12 +431,8 @@ function submitCita(){
     d.className='msg-bot';
     d.innerHTML=`${botAv()}<div style="max-width:85%"><div class="confirm-box">
       <div class="confirm-check"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h4>¡Solicitud enviada, ${nombre}!</h4>
-      <p>Hemos registrado tu solicitud para el <strong style="color:#a78bfa">${citaFecha}</strong>.\n\nUn gestor te llamará al ${tel} para confirmar la hora exacta de tu cita. También puedes contactarnos directamente.</p>
-      <a href="https://wa.me/${WA}?text=${waText}" target="_blank" class="wa-btn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.251.621 4.357 1.7 6.159l-1.799 6.591 6.756-1.771c1.752.96 3.774 1.513 5.946 1.514 6.627 0 12-5.373 12-12 .001-6.628-5.372-12.001-11.999-12.001z"/></svg>
-        Contactar por WhatsApp
-      </a>
+      <h4>¡Datos recibidos!</h4>
+      <p>Hemos tramitado tus datos. Un agente te llamará para resolver todas tus consultas sobre la solicitud indicada.</p>
     </div></div>`;
     b.appendChild(d);b.scrollTop=b.scrollHeight;
   },1000);
@@ -457,17 +452,17 @@ function submitLead(){
   const nombre=document.getElementById('lead-nombre')?.value?.trim();
   const apellidos=document.getElementById('lead-apellidos')?.value?.trim()||'';
   const tel=document.getElementById('lead-tel')?.value?.trim();
-  const horario=document.getElementById('lead-horario')?.value?.trim();
+  const horario=document.getElementById('lead-horario')?.value?.trim()||'Sin especificar';
   if(!nombre||!tel){alert('Por favor rellena nombre y teléfono.');return;}
   document.querySelector('.lead-form')?.remove();
-  addUserMsg(`${nombre} · ${tel}${horario?' · '+horario:''}`);
+  addUserMsg(`${nombre} ${apellidos} · ${tel} · ${horario}`);
   sendToN8N({
     Fecha_Registro: new Date().toLocaleString('es-ES'),
     Nombre: nombre,
     Apellidos: apellidos,
     Telefono: tel,
-    Servicio: window._servicioActual || 'Consulta general',
-    Consulta: horario || 'Sin especificar',
+    Servicio: window._servicioActual||'Consulta general',
+    Consulta: horario,
     Fecha_Cita: '',
     Hora_Cita: '',
     Estado: 'Pendiente'
@@ -480,12 +475,8 @@ function submitLead(){
     d.className='msg-bot';
     d.innerHTML=`${botAv()}<div style="max-width:85%"><div class="confirm-box">
       <div class="confirm-check"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h4>¡Recibido, ${nombre}!</h4>
-      <p>Un gestor te llamará al <strong style="color:#a78bfa">${tel}</strong> en el horario indicado. Si prefieres contactarnos ahora:</p>
-      <a href="https://wa.me/${WA}?text=${waText}" target="_blank" class="wa-btn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.251.621 4.357 1.7 6.159l-1.799 6.591 6.756-1.771c1.752.96 3.774 1.513 5.946 1.514 6.627 0 12-5.373 12-12 .001-6.628-5.372-12.001-11.999-12.001z"/></svg>
-        Contactar por WhatsApp
-      </a>
+      <h4>¡Datos recibidos!</h4>
+      <p>Hemos tramitado tus datos. Un agente te llamará para resolver todas tus consultas sobre la solicitud indicada.</p>
     </div></div>`;
     b.appendChild(d);b.scrollTop=b.scrollHeight;
   },1000);
