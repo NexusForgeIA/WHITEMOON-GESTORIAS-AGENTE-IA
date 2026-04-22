@@ -424,7 +424,6 @@ function submitCita(){
     Hora_Cita: '',
     Estado: 'Pendiente'
   });
-  const waText=encodeURIComponent(`📅 NUEVA SOLICITUD DE CITA\nNombre: ${nombre}\nTeléfono: ${tel}\nFecha solicitada: ${citaFecha}\nMotivo: ${motivo||'No indicado'}`);
   addTyping();
   setTimeout(()=>{
     removeTyping();
@@ -473,7 +472,6 @@ function submitLead(){
     Hora_Cita: '',
     Estado: 'Pendiente'
   });
-  const waText=encodeURIComponent(`📞 NUEVO LEAD GESTORIA\nNombre: ${nombre}\nTeléfono: ${tel}\nHorario: ${horario||'cualquier hora'}`);
   addTyping();
   setTimeout(()=>{
     removeTyping();
