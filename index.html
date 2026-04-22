@@ -468,10 +468,12 @@ function submitLead(){
     Telefono: tel,
     Servicio: window._servicioActual||'Consulta general',
     Consulta: horario,
-    Fecha_Cita: '',
+    Fecha_Cita: citaFecha||'',
     Hora_Cita: '',
     Estado: 'Pendiente'
   });
+  citaFecha='';
+  window._modoLead=false;
   addTyping();
   setTimeout(()=>{
     removeTyping();
