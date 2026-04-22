@@ -188,6 +188,7 @@ async function sendToN8N(data) {
   try {
     await fetch(N8N_WEBHOOK, {
       method: 'POST',
+      mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
@@ -403,7 +404,6 @@ function citaLeadFormHtml(){
     <input type="text" id="cita-nombre" placeholder="Nombre">
     <input type="text" id="cita-apellidos" placeholder="Apellidos">
     <input type="tel" id="cita-tel" placeholder="Teléfono de contacto">
-    <input type="text" id="cita-motivo" placeholder="Motivo de la consulta (opcional)">
     <button class="lead-submit" onclick="submitCita()">✅ Confirmar solicitud de cita</button>
   </div>`;
 }
@@ -412,7 +412,7 @@ function submitCita(){
   const nombre=document.getElementById('cita-nombre')?.value?.trim();
   const apellidos=document.getElementById('cita-apellidos')?.value?.trim()||'';
   const tel=document.getElementById('cita-tel')?.value?.trim();
-  const motivo=document.getElementById('cita-motivo')?.value?.trim()||'Sin especificar';
+  const motivo='';
   if(!nombre||!tel){alert('Por favor rellena nombre y teléfono.');return;}
   document.querySelector('.lead-form')?.remove();
   addUserMsg(`${nombre} ${apellidos} · ${tel} · ${citaFecha}`);
@@ -447,7 +447,6 @@ function leadFormHtml(){
     <input type="text" id="lead-nombre" placeholder="Nombre">
     <input type="text" id="lead-apellidos" placeholder="Apellidos">
     <input type="tel" id="lead-tel" placeholder="Teléfono de contacto">
-    <input type="text" id="lead-horario" placeholder="Mejor horario para llamarte">
     <button class="lead-submit" onclick="submitLead()">📞 Quiero que me llamen</button>
   </div>`;
 }
@@ -456,10 +455,10 @@ function submitLead(){
   const nombre=document.getElementById('lead-nombre')?.value?.trim();
   const apellidos=document.getElementById('lead-apellidos')?.value?.trim()||'';
   const tel=document.getElementById('lead-tel')?.value?.trim();
-  const horario=document.getElementById('lead-horario')?.value?.trim()||'Sin especificar';
+  const horario='';
   if(!nombre||!tel){alert('Por favor rellena nombre y teléfono.');return;}
   document.querySelector('.lead-form')?.remove();
-  addUserMsg(`${nombre} ${apellidos} · ${tel} · ${horario}`);
+  addUserMsg(`${nombre} ${apellidos} · ${tel}`);
   sendToN8N({
     Fecha_Registro: new Date().toLocaleString('es-ES'),
     Nombre: nombre,
